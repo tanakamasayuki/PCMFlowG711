@@ -173,6 +173,41 @@ def write_encoder_reference(path: pathlib.Path) -> None:
     path.write_text(body, encoding="utf-8")
 
 
+def write_external_source_reference(path: pathlib.Path) -> None:
+    """A short G.711 byte pattern and its expected decoded PCM.
+
+    Used by the external_source integration test, which feeds these
+    bytes into G711Decoder, wires the decoder as a PCMSource into
+    PCMFlow, and verifies the PCM produced at the PCMFlow output
+    matches the expected sequence bit-exactly.
+
+    160 bytes = 20 ms at 8 kHz, the natural RTP frame.
+    """
+    # Diverse pattern: every 8th byte from 0..255 cycled twice. Hits
+    # every mu-law / A-law segment so the queue-path test exercises a
+    # broad slice of the decode space.
+    bytes_ = [(i * 8 + (i // 32)) & 0xFF for i in range(160)]
+    mu_pcm = [mulaw_decode_sample(b) for b in bytes_]
+    a_pcm = [alaw_decode_sample(b) for b in bytes_]
+    body = (
+        f"{_BANNER}"
+        "#pragma once\n"
+        "#include <stdint.h>\n"
+        "#include <stddef.h>\n\n"
+        f"static const size_t kG711ExtSourceByteCount = {len(bytes_)};\n\n"
+        "static const uint8_t kG711ExtSourceBytes[] = {\n"
+        f"    {_fmt_u8_row(bytes_)}\n"
+        "};\n\n"
+        "static const int16_t kG711ExtSourceExpectedMuLaw[] = {\n"
+        f"    {_fmt_i16_row(mu_pcm)}\n"
+        "};\n\n"
+        "static const int16_t kG711ExtSourceExpectedALaw[] = {\n"
+        f"    {_fmt_i16_row(a_pcm)}\n"
+        "};\n"
+    )
+    path.write_text(body, encoding="utf-8")
+
+
 def write_roundtrip_reference(path: pathlib.Path) -> None:
     """PCM inputs and the values they should decode to after encode->decode.
 
@@ -231,9 +266,10 @@ def main() -> None:
 
     tests_root = pathlib.Path(__file__).resolve().parents[1]
     targets = {
-        "g711_decoder": ("reference.h", write_decoder_reference),
-        "g711_encoder": ("reference.h", write_encoder_reference),
-        "roundtrip":    ("reference.h", write_roundtrip_reference),
+        "g711_decoder":    ("reference.h", write_decoder_reference),
+        "g711_encoder":    ("reference.h", write_encoder_reference),
+        "roundtrip":       ("reference.h", write_roundtrip_reference),
+        "external_source": ("reference.h", write_external_source_reference),
     }
     for sub, (name, fn) in targets.items():
         out_dir = tests_root / sub / "input"

@@ -4,9 +4,9 @@
 
 ## 1. Scope
 
-**PCMFlowG711** is an optional G.711 codec add-on for [PCMFlow](https://github.com/tanakamasayuki/PCMFlow), focused on **real-time two-way voice / packet-radio use cases**
+**PCMFlowG711** is an optional G.711 codec add-on for [PCMFlow](https://github.com/tanakamasayuki/PCMFlow), focused on **real-time two-way voice / packet-radio use cases** (VoIP, ESP-NOW transceivers, WebSocket / UDP voice links) where the smallest possible codec footprint is preferred over compression ratio.
 
-> **Sibling libraries in the same family:** [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus) (released) for low-bitrate / wide- and fullband audio; **PCMFlowG722** (planned, not yet released) for wideband HD voice at the same 64 kbps budget as G.711. All three plug into PCMFlow through `PCMSource` / `PCMSink` and can coexist in the same sketch. See [README "PCMFlow codec family"](README.md#pcmflow-codec-family) for the trade-off table. (VoIP, ESP-NOW transceivers, WebSocket / UDP voice links) where the smallest possible codec footprint is preferred over compression ratio.
+> **Sibling libraries in the same family:** [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus) for low-bitrate / wide- and fullband audio; [PCMFlowG722](https://github.com/tanakamasayuki/PCMFlowG722) for wideband HD voice at the same 64 kbps budget as G.711. All three plug into PCMFlow through `PCMSource` / `PCMSink` and can coexist in the same sketch. See [README "PCMFlow codec family"](README.md#pcmflow-codec-family) for the trade-off table.
 
 Responsibility:
 
@@ -42,7 +42,7 @@ Compare to raw 8 kHz mono 16-bit PCM: 320 B per 20 ms. G.711 compresses **2×** 
 
 An end-to-end transceiver sketch lives in [examples/EspNowTransceiver/](examples/EspNowTransceiver/) (mic → G.711 encode → ESP-NOW broadcast / ESP-NOW receive → G.711 decode → I2S DAC, all in one sketch).
 
-## 4. Public API (planned)
+## 4. Public API
 
 Two classes; both work on **N samples at a time** (N chosen by the caller — there is no internal framing). One PCM sample maps to exactly one G.711 byte.
 

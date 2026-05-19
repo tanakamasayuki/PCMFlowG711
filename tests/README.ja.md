@@ -9,10 +9,6 @@ PCMFlowG711 の自動テストスイート。親 [PCMFlow テストスイート]
 - 機能ごとのサブディレクトリに `<feature>.ino` / `sketch.yaml` / `test_<feature>.py` / `input/` fixture
 - アサーションは `EXPECT_TRUE` / `EXPECT_EQ` / `EXPECT_NEAR` マクロ + Serial 経由の `TEST done N/M` プロトコル
 
-## ステータス
-
-**雛形整備中。** smoke テストは動作する。コーデック別ディレクトリにはプレースホルダのスケッチが入っており、Python 側は今のところ「TEST start」と「TEST done」のみ検証。実体のあるアサーションはエンコーダ / デコーダ本体の実装と同時に追加する。
-
 ## ディレクトリ構成
 
 - `smoke/` — テンプレート smoke テスト(host プロファイル)。テスト基盤そのものを検証

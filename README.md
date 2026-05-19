@@ -10,12 +10,6 @@ See [SPEC.md](SPEC.md) for the full specification.
 
 ---
 
-## Status
-
-**Pre-release / scaffolding.** Repository layout, documentation, release tooling, and the public API surface are in place. The encoder / decoder implementations are not yet wired in. See [CHANGELOG.md](CHANGELOG.md).
-
----
-
 ## What's inside
 
 | Class | Direction | Carrier | Interface |
@@ -33,7 +27,7 @@ WAV-container support (`WAVE_FORMAT_MULAW` / `WAVE_FORMAT_ALAW` files) is intent
 
 PCMFlowG711 is one member of a family of optional codec add-ons for PCMFlow. Pick whichever matches your bandwidth / footprint / quality budget:
 
-| | **PCMFlowG711** (this lib) | [PCMFlowG722](https://github.com/tanakamasayuki/PCMFlowG722) (planned) | [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus) |
+| | **PCMFlowG711** (this lib) | [PCMFlowG722](https://github.com/tanakamasayuki/PCMFlowG722) | [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus) |
 |---|---|---|---|
 | Audio band | narrowband (8 kHz / ≤ 3.4 kHz) | **wideband (16 kHz / ≤ 7 kHz)** | narrow / wide / fullband (8–48 kHz) |
 | Bitrate (voice) | 64 kbps fixed | 48 / 56 / 64 kbps | 16–32 kbps typical |
@@ -48,7 +42,7 @@ Pick G.711 when:
 - You want the smallest possible codec footprint (e.g. coexisting with a large application, or running on a memory-tight board).
 - You want a clean, single-license MIT codebase with no third-party attribution.
 
-Pick [G.722 (PCMFlowG722)](https://github.com/tanakamasayuki/PCMFlowG722) — **planned sibling library, not yet released** — when you want **HD-voice wideband audio at the same 64 kbps** as G.711, with only a moderate footprint increase. G.722 sits in the natural middle of the family between G.711 and Opus.
+Pick [G.722 (PCMFlowG722)](https://github.com/tanakamasayuki/PCMFlowG722) when you want **HD-voice wideband audio at the same 64 kbps** as G.711, with only a moderate footprint increase. G.722 sits in the natural middle of the family between G.711 and Opus.
 
 Pick [Opus (PCMFlowOpus)](https://github.com/tanakamasayuki/PCMFlowOpus) when you need the bandwidth savings or fullband audio quality.
 
@@ -85,7 +79,7 @@ void onEspNowRecv(const uint8_t *mac, const uint8_t *data, int len) {
 }
 ```
 
-End-to-end transceiver sketch (mic ↔ ESP-NOW ↔ DAC) lives in [examples/EspNowTransceiver/](examples/EspNowTransceiver/) (placeholder for now).
+End-to-end transceiver sketch (mic ↔ ESP-NOW ↔ DAC) lives in [examples/EspNowTransceiver/](examples/EspNowTransceiver/); see also [examples/MicLoopback/](examples/MicLoopback/) for a single-board sanity check.
 
 ---
 

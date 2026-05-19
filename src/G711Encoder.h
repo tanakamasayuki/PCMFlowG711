@@ -19,9 +19,6 @@
 // begin() with G711Variant fixes the curve, and subsequent encode()
 // calls are independent of one another. Safe to call from any task
 // context once begin() has returned.
-//
-// STATUS: header skeleton only. Implementation is forthcoming.
-//         Signatures below are SPEC §4.2 sketches.
 
 class G711Encoder : public PCMSink
 {

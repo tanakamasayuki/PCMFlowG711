@@ -19,9 +19,6 @@
 // caller decides whether to feed silence, hold the last sample, or
 // insert comfort noise. See the EspNowTransceiver example for one
 // minimal pattern.
-//
-// STATUS: header skeleton only. Implementation is forthcoming.
-//         Signatures below are SPEC §4.3 sketches.
 
 class G711Decoder : public PCMSource
 {

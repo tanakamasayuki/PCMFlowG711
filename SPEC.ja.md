@@ -4,9 +4,9 @@
 
 ## 1. スコープ
 
-**PCMFlowG711** は [PCMFlow](https://github.com/tanakamasayuki/PCMFlow) 向けのオプション G.711 コーデックアドオン。
+**PCMFlowG711** は [PCMFlow](https://github.com/tanakamasayuki/PCMFlow) 向けのオプション G.711 コーデックアドオン。圧縮率より**コーデック自体のフットプリント極小**を優先したい**リアルタイム双方向音声**(VoIP、ESP-NOW トランシーバ、WebSocket / UDP 音声リンク)に焦点を絞る。
 
-> **同ファミリーの姉妹ライブラリ:** [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus)(リリース済)— 低ビットレート / 広帯域・全帯域音声向け。**PCMFlowG722**(計画中、未リリース)— G.711 と同じ 64 kbps で広帯域 HD voice。いずれも PCMFlow に `PCMSource` / `PCMSink` 経由で接続し、同じスケッチに共存できる。比較表は [README「PCMFlow コーデックファミリー」](README.ja.md#pcmflow-コーデックファミリー) を参照。圧縮率より**コーデック自体のフットプリント極小**を優先したい**リアルタイム双方向音声**(VoIP、ESP-NOW トランシーバ、WebSocket / UDP 音声リンク)に焦点を絞る。
+> **同ファミリーの姉妹ライブラリ:** [PCMFlowOpus](https://github.com/tanakamasayuki/PCMFlowOpus) — 低ビットレート / 広帯域・全帯域音声向け。[PCMFlowG722](https://github.com/tanakamasayuki/PCMFlowG722) — G.711 と同じ 64 kbps で広帯域 HD voice。いずれも PCMFlow に `PCMSource` / `PCMSink` 経由で接続し、同じスケッチに共存できる。比較表は [README「PCMFlow コーデックファミリー」](README.ja.md#pcmflow-コーデックファミリー) を参照。
 
 責務:
 
@@ -42,7 +42,7 @@
 
 エンド-to-エンドのトランシーバ用サンプルは [examples/EspNowTransceiver/](examples/EspNowTransceiver/) に同梱(マイク→G.711 エンコード→ESP-NOW broadcast / ESP-NOW 受信→G.711 デコード→I2S DAC、すべて 1 スケッチに収める)。
 
-## 4. 公開 API(計画)
+## 4. 公開 API
 
 2 クラス。両方とも **N サンプル単位**で動作(N は呼び出し側が選ぶ、コーデック側にフレーミングはない)。PCM 1 サンプル ↔ G.711 1 バイト。
 

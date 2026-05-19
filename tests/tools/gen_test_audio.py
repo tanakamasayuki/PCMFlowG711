@@ -75,10 +75,13 @@ _ALAW_INVERT = 0x55
 
 
 def alaw_encode_sample(pcm16: int) -> int:
-    sign = 0
-    if pcm16 < 0:
-        pcm16 = -pcm16 - 1
+    # A-law convention: pre-XOR bit 7 == 1 denotes positive. Negative
+    # magnitudes use one's-complement of (-pcm - 1).
+    if pcm16 >= 0:
         sign = 0x80
+    else:
+        sign = 0x00
+        pcm16 = -pcm16 - 1
     if pcm16 > 32767:
         pcm16 = 32767
     if pcm16 < 256:
@@ -97,14 +100,14 @@ def alaw_encode_sample(pcm16: int) -> int:
 
 def alaw_decode_sample(code: int) -> int:
     code ^= _ALAW_INVERT
-    sign = code & 0x80
+    sign = code & 0x80  # 1 == positive in pre-XOR form
     seg = (code >> 4) & 0x07
     mantissa = code & 0x0F
     if seg == 0:
         magnitude = (mantissa << 4) + 8
     else:
         magnitude = ((mantissa << 4) + 0x108) << (seg - 1)
-    return -magnitude if sign else magnitude
+    return magnitude if sign else -magnitude
 
 
 # -------------------------------------------------------------------- driver

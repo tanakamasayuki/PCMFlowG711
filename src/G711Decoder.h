@@ -70,10 +70,20 @@ public:
     Error lastError() const { return error_; }
 
 private:
+    // Small FIFO of yet-to-be-decoded G.711 bytes for the PCMSource
+    // (setInputSource) path: decode(packet, n, nullptr, 0) enqueues
+    // bytes here; readFrames() pulls and decodes on demand. 320 bytes
+    // = 40 ms at 8 kHz, twice the typical RTP 20 ms cadence.
+    static constexpr size_t kQueueCapacity = 320;
+
     PCMFormat format_{};
     G711Variant variant_ = G711Variant::MuLaw;
     bool ready_ = false;
     Error error_ = Error::NotReady;
+
+    uint8_t queue_[kQueueCapacity]{};
+    size_t head_ = 0;
+    size_t tail_ = 0;
 };
 
 #endif // PCMFLOWG711_G711DECODER_H

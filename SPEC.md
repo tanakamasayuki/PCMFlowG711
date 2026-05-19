@@ -119,7 +119,8 @@ G.711 is a table-lookup codec, so the footprint is tiny by construction.
 | Flash (encoder + decoder, both variants) | ≤ 4 KB |
 | Flash (decoder only, both variants, link-time discarded encoder) | ≤ 2 KB |
 | RAM, persistent encoder state | ≤ 16 B |
-| RAM, persistent decoder state | ≤ 16 B |
+| RAM, persistent decoder state (direct decode only) | ≤ 16 B |
+| RAM, persistent decoder state (with PCMSource queue for `setInputSource`) | ~320 B |
 | Per-call scratch | none |
 
 The implementation uses precomputed 256-entry lookup tables for the decode direction (~1 KB Flash for both variants combined) and the standard segment-based encode formulas from the ITU-T G.711 specification (≤ ~200 B of code per variant). No dynamic allocation.

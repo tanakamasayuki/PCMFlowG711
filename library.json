@@ -1,0 +1,26 @@
+{
+  "name": "PCMFlowG711",
+  "version": "0.1.0",
+  "description": "G.711 (mu-law / A-law) codec add-on for PCMFlow, focused on real-time voice (VoIP, ESP-NOW transceivers). Pure MIT implementation of ITU-T G.711 with no third-party vendored code. Exposes G711Encoder / G711Decoder via PCMFlow's PCMSink / PCMSource interfaces. Operates on raw G.711 bytes; flash footprint under 4 KB.",
+  "keywords": "audio, g711, mulaw, alaw, codec, voip, esp-now, esp32, pcmflow",
+  "authors": [
+    {
+      "name": "TANAKA Masayuki",
+      "maintainer": true
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tanakamasayuki/PCMFlowG711.git"
+  },
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "headers": "PCMFlowG711.h",
+  "dependencies": [
+    {
+      "name": "PCMFlow",
+      "owner": "tanakamasayuki"
+    }
+  ]
+}

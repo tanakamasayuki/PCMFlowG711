@@ -24,6 +24,7 @@
 #include <esp_now.h>
 #include <esp_wifi.h>
 #include <PCMFlow.h>
+#include <PCMFlowDeviceM5.h>
 #include <PCMFlowG711.h>
 
 // ---------------------------------------------------------------------------
@@ -31,8 +32,12 @@
 // ---------------------------------------------------------------------------
 static constexpr G711Variant kVariant = G711Variant::MuLaw;
 static constexpr uint32_t kRate = 8000;      // G.711 fixed
+static constexpr uint32_t kSpeakerRate = 16000;
 static constexpr size_t kFrameSamples = 160; // 20 ms @ 8 kHz
+static constexpr size_t kUpsampleRatio = kSpeakerRate / kRate;
+static constexpr size_t kMaxPlayFrames = (kSpeakerRate * 80u) / 1000u;
 static constexpr uint8_t kWifiChannel = 1;   // both boards must agree
+using Player = M5SpeakerBufferedPlayer<kMaxPlayFrames>;
 
 static const uint8_t kBroadcastMac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -42,6 +47,7 @@ static const uint8_t kBroadcastMac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 static G711Encoder g_enc;
 static G711Decoder g_dec;
 static PCMFlow g_audio;
+static Player g_player;
 
 // ---------------------------------------------------------------------------
 // ESP-NOW: send + receive callbacks
@@ -112,12 +118,17 @@ static void play_pending_audio()
     while (g_audio.availableFrames() >= kFrameSamples)
     {
         static int16_t buf[kFrameSamples];
+        static int16_t speakerPcm[kFrameSamples * kUpsampleRatio];
         const size_t got = g_audio.readFrames(buf, kFrameSamples);
         if (got == 0)
             break;
-        // Speaker expects sample count; 8 kHz mono -> got samples.
-        while (!M5.Speaker.playRaw(buf, got, kRate, /*stereo=*/false))
-            delay(1);
+        size_t speakerFrames = 0;
+        for (size_t i = 0; i < got; ++i)
+        {
+            for (size_t j = 0; j < kUpsampleRatio; ++j)
+                speakerPcm[speakerFrames++] = buf[i];
+        }
+        g_player.writeFrames(speakerPcm, speakerFrames);
     }
 }
 
@@ -150,6 +161,12 @@ void setup()
     g_audio.setOutputFormat({kRate, 1, 16});
     g_audio.setBufferFrames(2048);
     g_audio.setInputSource(g_dec);
+
+    if (!g_player.begin({kSpeakerRate, 1, 16}, Player::stableProfile()))
+    {
+        Serial.println("player begin failed");
+        return;
+    }
 
     if (!espnow_setup())
     {
